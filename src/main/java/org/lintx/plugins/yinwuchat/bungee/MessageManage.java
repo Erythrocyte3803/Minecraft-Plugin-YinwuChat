@@ -16,7 +16,9 @@ import org.lintx.plugins.yinwuchat.Util.MessageUtil;
 import org.lintx.plugins.yinwuchat.bungee.config.Config;
 import org.lintx.plugins.yinwuchat.bungee.config.PlayerConfig;
 import org.lintx.plugins.yinwuchat.bungee.json.InputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.InputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputServerMessage;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.NettyChannelMessageHelper;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.WsClientUtil;
@@ -122,6 +124,9 @@ public class MessageManage {
                 boolean notQQ = false;
                 if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart)){
                     notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart);
+                }
+                if (!"".equals(Config.getInstance().coolQConfig.gameToGuildStart)){
+                    notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToGuildStart);
                 }
 
                 if (config.allowPlayerFormatPrefixSuffix && null!=fromPlayer.config.publicPrefix && !"".equals(fromPlayer.config.publicPrefix)) publicMessage.chat = fromPlayer.config.publicPrefix + publicMessage.chat;
@@ -463,7 +468,9 @@ public class MessageManage {
         if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart)){
             notQQ = !message.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart);
         }
-
+        if (!"".equals(Config.getInstance().coolQConfig.gameToGuildStart)){
+            notQQ = !message.startsWith(Config.getInstance().coolQConfig.gameToGuildStart);
+        }
         if (config.allowPlayerFormatPrefixSuffix && null!=playerConfig.publicPrefix && !"".equals(playerConfig.publicPrefix)) message = playerConfig.publicPrefix + message;
         if (config.allowPlayerFormatPrefixSuffix && null!=playerConfig.publicSuffix && !"".equals(playerConfig.publicSuffix)) message = message + playerConfig.publicSuffix;
 
@@ -532,7 +539,33 @@ public class MessageManage {
         broadcast(null,messageComponent,true);
         plugin.getLogger().info(messageComponent.toPlainText());
     }
+    public void handleGuildMessage(InputQGuild json){
+        if (!config.coolQConfig.guildToGame) return;
 
+        String name = json.getSender().getNickname();
+        name = MessageUtil.removeEmoji(name);
+        BungeeChatPlayer fromPlayer = new BungeeChatPlayer();
+        fromPlayer.playerName = name;
+
+        ChatStruct struct = new ChatStruct();
+        struct.chat = json.getMessage().replaceAll("\n"," ").replaceAll("\r"," ");
+        List<ChatStruct> list = new ArrayList<>();
+        list.add(struct);
+
+        Chat chat = new Chat(fromPlayer,list, ChatSource.QQ);
+
+        for (ChatHandle handle:handles){
+            handle.handle(chat);
+        }
+        TextComponent messageComponent = chat.buildPublicMessage(config.formatConfig.gFormat);
+
+        if (messageComponent.getExtra()==null || messageComponent.getExtra().size()==0){
+            return;
+        }
+
+        broadcast(null,messageComponent,true);
+        plugin.getLogger().info(messageComponent.toPlainText());
+    }
     //定时任务发送广播消息
     public void broadcast(List<MessageFormat> formats,String server){
         Chat chat = new Chat();
@@ -593,6 +626,18 @@ public class MessageManage {
                 message = message.replaceAll("§([0-9a-fklmnor])","");
                 try {
                     NettyChannelMessageHelper.send(channel,new OutputCoolQ(message).getJSON());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (!noqq && config.coolQConfig.gameToGuild){
+            Channel channel = WsClientHelper.getCoolQ();
+            if (channel!=null){
+                String message = component.toPlainText();
+                message = message.replaceAll("§([0-9a-fklmnor])","");
+                try {
+                    NettyChannelMessageHelper.send(channel,new OutputQGuild(message).getJSON());
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -24,6 +24,7 @@ public class InputBase {
             if (jsonTree.isJsonObject()) {
                 JsonObject object = jsonTree.getAsJsonObject();
                 JsonElement actionElement = object.get("action");
+                JsonElement msgtype = object.get("message_type");
                 if (actionElement!=null){
                     String action = actionElement.getAsString();
                     if (action.equalsIgnoreCase("check_token")) {
@@ -34,14 +35,27 @@ public class InputBase {
                     }
                 }else {
                     JsonElement postTypeElement = object.get("post_type");
-                    if (postTypeElement!=null){
-                        InputCoolQ inputModel;
-                        try {
-                            inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ>(){}.getType());
-                            return inputModel;
-                        }catch (Exception ignored){
+                    if(msgtype!= null){
+                        String mtype = msgtype.getAsString();
+                        if (postTypeElement!=null && mtype.equals("group")){
+                            InputCoolQ inputModel;
+                            try {
+                                //System.out.println("groupjson"+json);
+                                inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ>(){}.getType());
+                                return inputModel;
+                            }catch (Exception ignored){
+                            }
+                        }else if(postTypeElement!=null && mtype.equals("guild")){
+                            InputQGuild inputModel;
+                            try {
+                                //System.out.println("guildjson"+json);
+                                inputModel = Gson.gson().fromJson(json,new TypeToken<InputQGuild>(){}.getType());
+                                return inputModel;
+                            }catch (Exception ignored){
+                            }
                         }
                     }
+
                 }
             }
         } catch (Exception e) {

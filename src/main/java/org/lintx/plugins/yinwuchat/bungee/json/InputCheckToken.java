@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @author LinTx
  */
-public class InputCheckToken extends InputBase {
+public class InputCheckToken extends InputBase  {
     private Boolean isvaild = false;
     private Boolean isbind = false;
     private String message = "";

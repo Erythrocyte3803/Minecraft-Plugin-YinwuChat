@@ -16,7 +16,11 @@ public class OutputCoolQ {
 
     public static class Params{
         Params(String message){
-            this.message = message;
+            if(Config.getInstance().coolQConfig.qqRemoveTextRegx == null){
+                this.message = message;
+            }else{
+                this.message = message.replaceAll(Config.getInstance().coolQConfig.qqRemoveTextRegx, "");
+            }   
         }
         @SerializedName("group_id")
         private int group_id= Config.getInstance().coolQConfig.coolQGroup;

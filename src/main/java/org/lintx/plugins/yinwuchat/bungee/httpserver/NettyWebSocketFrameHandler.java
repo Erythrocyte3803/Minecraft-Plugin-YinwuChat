@@ -111,6 +111,21 @@ public class NettyWebSocketFrameHandler extends SimpleChannelInboundHandler<WebS
                         MessageManage.getInstance().handleQQMessage(coolMessage);
                     }
                 }
+                else if (object instanceof InputQGuild){
+                    InputQGuild gMessage = (InputQGuild)object;
+                    if(gMessage.getPost_type().equalsIgnoreCase("message")
+                        && gMessage.getMessage_type().equalsIgnoreCase("guild")
+                        && gMessage.getSub_type().equalsIgnoreCase("channel")
+                        && gMessage.getGuild_id() == Config.getInstance().coolQConfig.qGuild
+                        && gMessage.getUser_id() != Config.getInstance().coolQConfig.guildUserId){
+                       if(!"".equals(Config.getInstance().coolQConfig.guildToGameStart)){
+                            if (!gMessage.getMessage().startsWith(Config.getInstance().coolQConfig.guildToGameStart)){
+                                return;
+                            }                           
+                       }
+                       MessageManage.getInstance().handleGuildMessage(gMessage);
+                    }
+                }
             });
         } else {
             String message = "unsupported frame type: " + frame.getClass().getName();

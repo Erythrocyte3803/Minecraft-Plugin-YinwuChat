@@ -13,7 +13,7 @@ import java.util.List;
 
 @YamlConfig
 public class Config {
-    private static int version = 6;
+    private static int version = 8;
     private static Config instance = new Config();
     public static Config getInstance(){
         return instance;
@@ -57,9 +57,26 @@ public class Config {
             formatConfig.qqFormat.add(new MessageFormat(" &6>>> "));
             formatConfig.qqFormat.add(new MessageFormat("&r{message}"));
         }
+        if (formatConfig.gFormat==null || formatConfig.gFormat.isEmpty()){
+            formatConfig.gFormat = new ArrayList<>();
+            formatConfig.gFormat.add(new MessageFormat("&b[QQ频道]","点击加入QQ频道xxxxx","https://xxxxxx.xxxx.xxx"));
+            formatConfig.gFormat.add(new MessageFormat("&e{displayName}"));
+            formatConfig.gFormat.add(new MessageFormat(" &6>>> "));
+            formatConfig.gFormat.add(new MessageFormat("&r{message}"));           
+        }
         if (configVersion<6){
             redisConfig.selfPrefixFormat = new ArrayList<>();
             redisConfig.selfPrefixFormat.add(new MessageFormat("&8[其他群组]&r","来自其他群组的消息",""));
+        }
+        if (configVersion<7){
+            coolQConfig.gameToGuild = new CoolQConfig().gameToGuild;
+            coolQConfig.gameToGuildStart = new CoolQConfig().gameToGuildStart;
+            coolQConfig.guildToGame = new CoolQConfig().guildToGame;
+            coolQConfig.guildToGameStart = new CoolQConfig().guildToGameStart;
+            coolQConfig.qqRemoveTextRegx = "[ \\[传送\\|私聊\\|@提醒\\]]+$|[ \\[私聊\\|@提醒\\]]+$";
+        }
+        if (configVersion<8){
+            coolQConfig.guildUserId = new CoolQConfig().guildUserId;
         }
         File file = new File(plugin.getDataFolder(),"config.yml");
         if (!file.exists() || version!=configVersion){

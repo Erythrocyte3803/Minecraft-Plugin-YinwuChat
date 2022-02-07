@@ -41,7 +41,6 @@ public class InputCoolQ extends InputBase {
     public String getRaw_message() {
         return raw_message;
     }
-
     public Sender getSender() {
         return sender;
     }

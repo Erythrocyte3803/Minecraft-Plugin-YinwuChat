@@ -16,6 +16,7 @@ import org.lintx.plugins.yinwuchat.bungee.config.RedisConfig;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.NettyChannelMessageHelper;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.WsClientHelper;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.RedisMessage;
 import org.lintx.plugins.yinwuchat.bungee.json.RedisMessageType;
 import org.lintx.plugins.yinwuchat.chat.struct.Chat;
@@ -167,6 +168,18 @@ public class RedisUtil {
                         qqmessage = qqmessage.replaceAll("§([0-9a-fklmnor])","");
                         try {
                             NettyChannelMessageHelper.send(channel,new OutputCoolQ(qqmessage).getJSON());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (Config.getInstance().coolQConfig.gameToGuild && config.forwardBcMessageToQQ){
+                    Channel channel = WsClientHelper.getCoolQ();
+                    if (channel!=null){
+                        String qqmessage = message.chat.toPlainText();
+                        qqmessage = qqmessage.replaceAll("§([0-9a-fklmnor])","");
+                        try {
+                            NettyChannelMessageHelper.send(channel,new OutputQGuild(qqmessage).getJSON());
                         }catch (Exception e){
                             e.printStackTrace();
                         }
