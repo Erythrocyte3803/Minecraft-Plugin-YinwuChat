@@ -16,8 +16,12 @@ import org.lintx.plugins.yinwuchat.Util.MessageUtil;
 import org.lintx.plugins.yinwuchat.bungee.config.Config;
 import org.lintx.plugins.yinwuchat.bungee.config.PlayerConfig;
 import org.lintx.plugins.yinwuchat.bungee.json.InputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.InputCoolQ2;
+import org.lintx.plugins.yinwuchat.bungee.json.InputCoolQ3;
 import org.lintx.plugins.yinwuchat.bungee.json.InputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ2;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ3;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputServerMessage;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.NettyChannelMessageHelper;
@@ -124,6 +128,12 @@ public class MessageManage {
                 boolean notQQ = false;
                 if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart)){
                     notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart);
+                }
+                if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart2)){
+                    notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart2);
+                }
+                if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart3)){
+                    notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart3);
                 }
                 if (!"".equals(Config.getInstance().coolQConfig.gameToGuildStart)){
                     notQQ = !publicMessage.chat.startsWith(Config.getInstance().coolQConfig.gameToGuildStart);
@@ -468,6 +478,9 @@ public class MessageManage {
         if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart)){
             notQQ = !message.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart);
         }
+        if (!"".equals(Config.getInstance().coolQConfig.gameToCoolqStart2)){
+            notQQ = !message.startsWith(Config.getInstance().coolQConfig.gameToCoolqStart2);
+        }
         if (!"".equals(Config.getInstance().coolQConfig.gameToGuildStart)){
             notQQ = !message.startsWith(Config.getInstance().coolQConfig.gameToGuildStart);
         }
@@ -531,6 +544,68 @@ public class MessageManage {
             handle.handle(chat);
         }
         TextComponent messageComponent = chat.buildPublicMessage(config.formatConfig.qqFormat);
+
+        if (messageComponent.getExtra()==null || messageComponent.getExtra().size()==0){
+            return;
+        }
+
+        broadcast(null,messageComponent,true);
+        plugin.getLogger().info(messageComponent.toPlainText());
+    }
+    public void handleQQMessage2(InputCoolQ2 json){
+        if (!config.coolQConfig.coolQQQToGame2) return;
+
+        String name = json.getSender().getCard();
+        if (name.equals("")){
+            name = json.getSender().getNickname();
+        }
+        name = MessageUtil.removeEmoji(name);
+
+        BungeeChatPlayer fromPlayer = new BungeeChatPlayer();
+        fromPlayer.playerName = name;
+
+        ChatStruct struct = new ChatStruct();
+        struct.chat = json.getRaw_message().replaceAll("\n"," ").replaceAll("\r"," ");
+        List<ChatStruct> list = new ArrayList<>();
+        list.add(struct);
+
+        Chat chat = new Chat(fromPlayer,list, ChatSource.QQ);
+
+        for (ChatHandle handle:handles){
+            handle.handle(chat);
+        }
+        TextComponent messageComponent = chat.buildPublicMessage(config.formatConfig.qqFormat2);
+
+        if (messageComponent.getExtra()==null || messageComponent.getExtra().size()==0){
+            return;
+        }
+
+        broadcast(null,messageComponent,true);
+        plugin.getLogger().info(messageComponent.toPlainText());
+    }
+    public void handleQQMessage3(InputCoolQ3 json){
+        if (!config.coolQConfig.coolQQQToGame3) return;
+
+        String name = json.getSender().getCard();
+        if (name.equals("")){
+            name = json.getSender().getNickname();
+        }
+        name = MessageUtil.removeEmoji(name);
+
+        BungeeChatPlayer fromPlayer = new BungeeChatPlayer();
+        fromPlayer.playerName = name;
+
+        ChatStruct struct = new ChatStruct();
+        struct.chat = json.getRaw_message().replaceAll("\n"," ").replaceAll("\r"," ");
+        List<ChatStruct> list = new ArrayList<>();
+        list.add(struct);
+
+        Chat chat = new Chat(fromPlayer,list, ChatSource.QQ);
+
+        for (ChatHandle handle:handles){
+            handle.handle(chat);
+        }
+        TextComponent messageComponent = chat.buildPublicMessage(config.formatConfig.qqFormat3);
 
         if (messageComponent.getExtra()==null || messageComponent.getExtra().size()==0){
             return;
@@ -626,6 +701,30 @@ public class MessageManage {
                 message = message.replaceAll("§([0-9a-fklmnor])","");
                 try {
                     NettyChannelMessageHelper.send(channel,new OutputCoolQ(message).getJSON());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (!noqq && config.coolQConfig.coolQGameToQQ2){
+            Channel channel = WsClientHelper.getCoolQ();
+            if (channel!=null){
+                String message = component.toPlainText();
+                message = message.replaceAll("§([0-9a-fklmnor])","");
+                try {
+                    NettyChannelMessageHelper.send(channel,new OutputCoolQ2(message).getJSON());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (!noqq && config.coolQConfig.coolQGameToQQ3){
+            Channel channel = WsClientHelper.getCoolQ();
+            if (channel!=null){
+                String message = component.toPlainText();
+                message = message.replaceAll("§([0-9a-fklmnor])","");
+                try {
+                    NettyChannelMessageHelper.send(channel,new OutputCoolQ3(message).getJSON());
                 }catch (Exception e){
                     e.printStackTrace();
                 }

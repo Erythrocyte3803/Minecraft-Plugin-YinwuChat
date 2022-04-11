@@ -111,6 +111,34 @@ public class NettyWebSocketFrameHandler extends SimpleChannelInboundHandler<WebS
                         MessageManage.getInstance().handleQQMessage(coolMessage);
                     }
                 }
+                else if (object instanceof InputCoolQ2){
+                    InputCoolQ2 coolMessage = (InputCoolQ2)object;
+                    if (coolMessage.getPost_type().equalsIgnoreCase("message")
+                            && coolMessage.getMessage_type().equalsIgnoreCase("group")
+                            && coolMessage.getSub_type().equalsIgnoreCase("normal")
+                            && coolMessage.getGroup_id() == Config.getInstance().coolQConfig.coolQGroup2){
+                        if (!"".equals(Config.getInstance().coolQConfig.coolqToGameStart2)){
+                            if (!coolMessage.getMessage().startsWith(Config.getInstance().coolQConfig.coolqToGameStart2)){
+                                return;
+                            }
+                        }
+                        MessageManage.getInstance().handleQQMessage2(coolMessage);
+                    }
+                }
+                else if (object instanceof InputCoolQ3){
+                    InputCoolQ3 coolMessage = (InputCoolQ3)object;
+                    if (coolMessage.getPost_type().equalsIgnoreCase("message")
+                            && coolMessage.getMessage_type().equalsIgnoreCase("group")
+                            && coolMessage.getSub_type().equalsIgnoreCase("normal")
+                            && coolMessage.getGroup_id() == Config.getInstance().coolQConfig.coolQGroup3){
+                        if (!"".equals(Config.getInstance().coolQConfig.coolqToGameStart3)){
+                            if (!coolMessage.getMessage().startsWith(Config.getInstance().coolQConfig.coolqToGameStart3)){
+                                return;
+                            }
+                        }
+                        MessageManage.getInstance().handleQQMessage3(coolMessage);
+                    }
+                }
                 else if (object instanceof InputQGuild){
                     InputQGuild gMessage = (InputQGuild)object;
                     if(gMessage.getPost_type().equalsIgnoreCase("message")

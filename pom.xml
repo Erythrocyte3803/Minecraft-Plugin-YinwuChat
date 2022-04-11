@@ -112,6 +112,8 @@
             <groupId>org.lintx.plugins.modules</groupId>
             <artifactId>Configure</artifactId>
             <version>1.2.3-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Configure-1.2.3-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>

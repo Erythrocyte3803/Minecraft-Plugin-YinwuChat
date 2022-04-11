@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.lintx.plugins.yinwuchat.Util.Gson;
+import org.lintx.plugins.yinwuchat.bungee.config.Config;
 
 /**
  *
@@ -25,6 +26,7 @@ public class InputBase {
                 JsonObject object = jsonTree.getAsJsonObject();
                 JsonElement actionElement = object.get("action");
                 JsonElement msgtype = object.get("message_type");
+                JsonElement groupid = object.get("group_id");
                 if (actionElement!=null){
                     String action = actionElement.getAsString();
                     if (action.equalsIgnoreCase("check_token")) {
@@ -37,25 +39,43 @@ public class InputBase {
                     JsonElement postTypeElement = object.get("post_type");
                     if(msgtype!= null){
                         String mtype = msgtype.getAsString();
-                        if (postTypeElement!=null && mtype.equals("group")){
-                            InputCoolQ inputModel;
-                            try {
-                                //System.out.println("groupjson"+json);
-                                inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ>(){}.getType());
-                                return inputModel;
-                            }catch (Exception ignored){
+                        if(groupid!=null){
+                            int gid = groupid.getAsInt();
+                            if (postTypeElement!=null && mtype.equals("group") && gid == Config.getInstance().coolQConfig.coolQGroup){
+                                InputCoolQ inputModel;
+                                try {
+                                    inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ>(){}.getType());
+                                    return inputModel;
+                                }
+                                catch (Exception ignored){
+                                } 
+                            }else if (postTypeElement!=null && mtype.equals("group") && gid == Config.getInstance().coolQConfig.coolQGroup2){
+                                InputCoolQ2 inputModel;
+                                try {
+                                    inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ2>(){}.getType());
+                                    return inputModel;
+                                }
+                                catch (Exception ignored){
+                                }
+                            }else if (postTypeElement!=null && mtype.equals("group") && gid == Config.getInstance().coolQConfig.coolQGroup3){
+                                InputCoolQ3 inputModel;
+                                try {
+                                    inputModel = Gson.gson().fromJson(json,new TypeToken<InputCoolQ3>(){}.getType());
+                                    return inputModel;
+                                }
+                                catch (Exception ignored){
+                                }
                             }
-                        }else if(postTypeElement!=null && mtype.equals("guild")){
+                        }
+                        if(postTypeElement!=null && mtype.equals("guild")){
                             InputQGuild inputModel;
                             try {
-                                //System.out.println("guildjson"+json);
                                 inputModel = Gson.gson().fromJson(json,new TypeToken<InputQGuild>(){}.getType());
                                 return inputModel;
                             }catch (Exception ignored){
                             }
                         }
                     }
-
                 }
             }
         } catch (Exception e) {

@@ -13,6 +13,12 @@ public class FormatConfig {
     @YamlConfig
     public List<MessageFormat> qqFormat = null;
 
+    @YamlConfig
+    public List<MessageFormat> qqFormat2 = null;
+
+    @YamlConfig
+    public List<MessageFormat> qqFormat3 = null;
+
     @YamlConfig 
     public List<MessageFormat> gFormat = null;
 

@@ -16,6 +16,8 @@ import org.lintx.plugins.yinwuchat.bungee.config.RedisConfig;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.NettyChannelMessageHelper;
 import org.lintx.plugins.yinwuchat.bungee.httpserver.WsClientHelper;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ2;
+import org.lintx.plugins.yinwuchat.bungee.json.OutputCoolQ3;
 import org.lintx.plugins.yinwuchat.bungee.json.OutputQGuild;
 import org.lintx.plugins.yinwuchat.bungee.json.RedisMessage;
 import org.lintx.plugins.yinwuchat.bungee.json.RedisMessageType;
@@ -173,7 +175,31 @@ public class RedisUtil {
                         }
                     }
                 }
-                if (Config.getInstance().coolQConfig.gameToGuild && config.forwardBcMessageToQQ){
+                if (Config.getInstance().coolQConfig.coolQGameToQQ2 && config.forwardBcMessageToQQ){
+                    Channel channel = WsClientHelper.getCoolQ();
+                    if (channel!=null){
+                        String qqmessage = message.chat.toPlainText();
+                        qqmessage = qqmessage.replaceAll("§([0-9a-fklmnor])","");
+                        try {
+                            NettyChannelMessageHelper.send(channel,new OutputCoolQ2(qqmessage).getJSON());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (Config.getInstance().coolQConfig.coolQGameToQQ3 && config.forwardBcMessageToQQ2){
+                    Channel channel = WsClientHelper.getCoolQ();
+                    if (channel!=null){
+                        String qqmessage = message.chat.toPlainText();
+                        qqmessage = qqmessage.replaceAll("§([0-9a-fklmnor])","");
+                        try {
+                            NettyChannelMessageHelper.send(channel,new OutputCoolQ3(qqmessage).getJSON());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (Config.getInstance().coolQConfig.gameToGuild && config.forwardBcMessageToQQ3){
                     Channel channel = WsClientHelper.getCoolQ();
                     if (channel!=null){
                         String qqmessage = message.chat.toPlainText();

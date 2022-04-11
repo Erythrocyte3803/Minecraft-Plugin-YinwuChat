@@ -32,6 +32,12 @@ public class RedisConfig {
     public boolean forwardBcMessageToQQ = true;
 
     @YamlConfig
+    public boolean forwardBcMessageToQQ2 = true;
+
+    @YamlConfig
+    public boolean forwardBcMessageToQQ3 = true;
+
+    @YamlConfig
     public boolean forwardBcMessageToWeb = true;
 
     @YamlConfig

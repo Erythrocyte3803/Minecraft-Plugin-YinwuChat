@@ -13,7 +13,7 @@ import java.util.List;
 
 @YamlConfig
 public class Config {
-    private static int version = 8;
+    private static int version = 9;
     private static Config instance = new Config();
     public static Config getInstance(){
         return instance;
@@ -52,10 +52,24 @@ public class Config {
         }
         if (formatConfig.qqFormat==null || formatConfig.qqFormat.isEmpty()){
             formatConfig.qqFormat = new ArrayList<>();
-            formatConfig.qqFormat.add(new MessageFormat("&b[QQ群]","点击加入QQ群xxxxx","https://xxxxxx.xxxx.xxx"));
+            formatConfig.qqFormat.add(new MessageFormat("&b[QQ群1群]","点击加入QQ群xxxxx1群","https://xxxxxx.xxxx.xxx"));
             formatConfig.qqFormat.add(new MessageFormat("&e{displayName}"));
             formatConfig.qqFormat.add(new MessageFormat(" &6>>> "));
             formatConfig.qqFormat.add(new MessageFormat("&r{message}"));
+        }
+        if (formatConfig.qqFormat2==null || formatConfig.qqFormat2.isEmpty()){
+            formatConfig.qqFormat2 = new ArrayList<>();
+            formatConfig.qqFormat2.add(new MessageFormat("&b[QQ群2群]","点击加入QQ群xxxxx2群","https://xxxxxx.xxxx.xxx"));
+            formatConfig.qqFormat2.add(new MessageFormat("&e{displayName}"));
+            formatConfig.qqFormat2.add(new MessageFormat(" &6>>> "));
+            formatConfig.qqFormat2.add(new MessageFormat("&r{message}"));
+        }
+        if (formatConfig.qqFormat3==null || formatConfig.qqFormat3.isEmpty()){
+            formatConfig.qqFormat3 = new ArrayList<>();
+            formatConfig.qqFormat3.add(new MessageFormat("&b[QQ群3群]","点击加入QQ群xxxxx3群","https://xxxxxx.xxxx.xxx"));
+            formatConfig.qqFormat3.add(new MessageFormat("&e{displayName}"));
+            formatConfig.qqFormat3.add(new MessageFormat(" &6>>> "));
+            formatConfig.qqFormat3.add(new MessageFormat("&r{message}"));
         }
         if (formatConfig.gFormat==null || formatConfig.gFormat.isEmpty()){
             formatConfig.gFormat = new ArrayList<>();
@@ -77,6 +91,20 @@ public class Config {
         }
         if (configVersion<8){
             coolQConfig.guildUserId = new CoolQConfig().guildUserId;
+        }
+        if (configVersion<9){
+            coolQConfig.coolQGroup2 = new CoolQConfig().coolQGroup2;
+            coolQConfig.coolQGameToQQ2 = new CoolQConfig().coolQGameToQQ2;
+            coolQConfig.coolQQQToGame2 = new CoolQConfig().coolQQQToGame2;
+            coolQConfig.coolqToGameStart2 = new CoolQConfig().coolqToGameStart2;
+            coolQConfig.gameToCoolqStart2 = new CoolQConfig().gameToCoolqStart2;
+            coolQConfig.coolQGroup3 = new CoolQConfig().coolQGroup3;
+            coolQConfig.coolQGameToQQ3 = new CoolQConfig().coolQGameToQQ3;
+            coolQConfig.coolQQQToGame3 = new CoolQConfig().coolQQQToGame3;
+            coolQConfig.coolqToGameStart3 = new CoolQConfig().coolqToGameStart3;
+            coolQConfig.gameToCoolqStart3 = new CoolQConfig().gameToCoolqStart3;
+            redisConfig.forwardBcMessageToQQ2 = new RedisConfig().forwardBcMessageToQQ2;
+            redisConfig.forwardBcMessageToQQ3 = new RedisConfig().forwardBcMessageToQQ3;
         }
         File file = new File(plugin.getDataFolder(),"config.yml");
         if (!file.exists() || version!=configVersion){
